@@ -5,12 +5,12 @@ import LoginFactory from "../factories/pages/login/LoginFactory.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/Home",
     name: "Home",
     component: HomeFactory,
   },
   {
-    path: "/login",
+    path: "/",
     name: "Login",
     component: LoginFactory,
   },
