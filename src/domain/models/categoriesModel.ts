@@ -3,5 +3,3 @@ export type CategoriesModel = {
   text: string;
   link: string;
 };
-
-// export type CategoriesParams = {};

@@ -6,7 +6,6 @@ import { MakeApiUrl, MakeAxiosHttpClient } from "../http"
 export const MakeCategories = (): Categories => {
   return new GetCategories(
     MakeApiUrl(apiRoutes.categories),
-    // MakeAxiosHttpClient<Categories.Params, Categories.Model>()
     MakeAxiosHttpClient<{}, Categories.Model>()
   )
 }

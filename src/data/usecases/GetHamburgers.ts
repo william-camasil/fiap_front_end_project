@@ -1,6 +1,6 @@
 import {
   BadRequestError,
-  Categories,
+  Hamburgers,
   ForbiddenError,
   InternalServerError,
   NotFoundError,
@@ -10,14 +10,13 @@ import {
 } from "../../domain";
 import { HttpClient, HttpStatusCode } from "../protocols";
 
-export class GetCategories implements Categories {
+export class GetHamburgers implements Hamburgers {
   constructor(
     private readonly url: string,
-    private readonly httpClient: HttpClient<
-    Categories.Model>
+    private readonly httpClient: HttpClient<Hamburgers.Model>
   ) {}
 
-  async getCategories(): Promise<Categories.Model> {
+  async getHamburgers(): Promise<Hamburgers.Model> {
     const httpResponse = await this.httpClient.request({
       url: `${this.url}`,
       method: "get",
@@ -25,7 +24,7 @@ export class GetCategories implements Categories {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.Ok:
-        return httpResponse.body as Categories.Model;
+        return httpResponse.body as Hamburgers.Model;
       case HttpStatusCode.Forbidden:
         throw new ForbiddenError();
       case HttpStatusCode.PreconditionFailed:

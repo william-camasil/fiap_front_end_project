@@ -4,10 +4,7 @@ export type CategoriesModel = {
   link: string;
 };
 
-export type CategoriesParams = {};
-
 export namespace Categories {
-  // export type Params = CategoriesParams;
   export type Model = CategoriesModel[];
 }
 
