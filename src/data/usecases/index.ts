@@ -1,1 +1,2 @@
-export * from "./PostAuthentication"
+export * from "./PostAuthentication";
+export * from "./GetCategories";
