@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { PropType, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { Hamburgers, Appetizers } from "../../protocols";
+import { Hamburgers, Appetizers, Desserts, Beverages } from "../../protocols";
 
-const { hamburgers, appetizers } = defineProps({
+const { hamburgers, appetizers, desserts, beverages } = defineProps({
   hamburgers: Object as PropType<Hamburgers>,
   appetizers: Object as PropType<Appetizers>,
+  desserts: Object as PropType<Desserts>,
+  beverages: Object as PropType<Beverages>,
 });
 
 const router = useRouter();
@@ -26,8 +28,18 @@ const handleShowMenuOptions = async (option: string) => {
         optionList.value = response;
         break;
 
+      case "sobremesas":
+        response = await desserts.getDesserts();
+        optionList.value = response;
+        break;
+
+      case "bebidas":
+        response = await beverages.getBeverages();
+        optionList.value = response;
+        break;
+
       default:
-        alert("Opção inválida");
+        alert(`Opção inválida:  ${option}`);
         break;
     }
   } catch (error) {
@@ -60,15 +72,19 @@ onMounted(() => {
           <h2>{{ option.title }}</h2>
           <p>{{ option.description }}</p>
           <p>
-            Preço: R$ {{ option.values.single }} (individual) / R$
-            {{ option.values.combo }} (combo)
+            Preço:
+            <span v-if="option.values">
+              R$ {{ option.values.single }} (individual) / R$
+              {{ option.values.combo }} (combo)
+            </span>
+            <span v-else> R$ {{ option.value }} (único) </span>
           </p>
         </div>
       </div>
     </div>
 
     <div v-else>
-      <p>Carregando opções...</p>
+      <p>Indisponível no momento.</p>
     </div>
   </div>
 </template>

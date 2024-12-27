@@ -1,22 +1,32 @@
 <script setup lang="ts">
 import { PropType, ref, onMounted } from "vue";
-import { Categories } from "../../protocols";
+import { Categories, Payment } from "../../protocols";
 import { useRouter } from "vue-router";
 
-const { categories } = defineProps({
+const { categories, payment } = defineProps({
   categories: Object as PropType<Categories>,
+  payment: Object as PropType<Payment>,
 });
 
 const router = useRouter();
 
 const categoryData = ref<string | null>(null);
 const categoriesList = ref<any[]>([]); // TODO: adicionar o tipo correto
+const paymentList = ref<any[]>([]); // TODO: adicionar o tipo correto
 
-// Função para buscar as categorias
 const handleShowCategories = async () => {
   try {
     const response = await categories.getCategories();
     categoriesList.value = response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleShowPayment = async () => {
+  try {
+    const response = await payment.getPayment();
+    paymentList.value = response;
   } catch (error) {
     console.error(error);
   }
@@ -32,6 +42,7 @@ const handleCategoryClick = async (link: string) => {
 
 onMounted(() => {
   handleShowCategories();
+  handleShowPayment();
 });
 </script>
 
@@ -49,9 +60,21 @@ onMounted(() => {
       </button>
     </div>
 
-    <div v-if="categoryData" class="category-details">
-      <p>{{ categoryData }}</p>
-    </div>
+    <h1>Formas de pagamento</h1>
+    <table class="payment-table">
+      <thead>
+        <tr>
+          <th>Opção</th>
+          <th>Forma de Pagamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="payment in paymentList" :key="payment.id">
+          <td>{{ payment.value }}</td>
+          <td>{{ payment.text }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -100,10 +123,31 @@ h1 {
   background-color: #002d56;
 }
 
-.category-details {
+table {
+  width: 80%;
   margin-top: 30px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #003366;
+  color: white;
   font-size: 18px;
-  color: #000;
-  text-align: center;
+}
+
+td {
+  font-size: 16px;
+  color: #333;
+}
+
+table tbody tr:hover {
+  background-color: #f4f4f4;
 }
 </style>
