@@ -13,28 +13,46 @@ const { hamburgers, appetizers, desserts, beverages } = defineProps({
 const router = useRouter();
 
 const optionList = ref<any[]>([]);
+const cart = ref<any[]>([]);
+
+const loadCart = () => {
+  const savedCart = localStorage.getItem("cart");
+  if (savedCart) {
+    cart.value = JSON.parse(savedCart);
+  }
+};
+
+const saveCart = () => {
+  localStorage.setItem("cart", JSON.stringify(cart.value));
+};
+
+const clearCart = () => {
+  cart.value = [];
+  localStorage.removeItem("cart");
+  alert("Itens removidos do carrinho");
+};
 
 const handleShowMenuOptions = async (option: string) => {
   try {
     let response;
     switch (option.toString()) {
       case "hamburgers":
-        response = await hamburgers.getHamburgers();
+        response = await hamburgers!.getHamburgers();
         optionList.value = response;
         break;
 
       case "porcoes":
-        response = await appetizers.getAppetizers();
+        response = await appetizers!.getAppetizers();
         optionList.value = response;
         break;
 
       case "sobremesas":
-        response = await desserts.getDesserts();
+        response = await desserts!.getDesserts();
         optionList.value = response;
         break;
 
       case "bebidas":
-        response = await beverages.getBeverages();
+        response = await beverages!.getBeverages();
         optionList.value = response;
         break;
 
@@ -47,7 +65,15 @@ const handleShowMenuOptions = async (option: string) => {
   }
 };
 
+const addToCart = (title: string, value: number) => {
+  const item = { title, value };
+  cart.value.push(item);
+  saveCart();
+  alert(`Item adicionado: ${item.title} - R$ ${item.value}`);
+};
+
 onMounted(() => {
+  loadCart();
   const routeState = router.currentRoute.value.params;
   if (routeState && routeState.link) {
     handleShowMenuOptions(routeState.link);
@@ -74,11 +100,31 @@ onMounted(() => {
           <p>
             Preço:
             <span v-if="option.values">
-              R$ {{ option.values.single }} (individual) / R$
-              {{ option.values.combo }} (combo)
+              <span v-if="option.values.single">
+                R$ {{ option.values.single }} (individual) / R$
+                {{ option.values.combo }} (combo)
+              </span>
+              <span v-if="option.values.small">
+                R$ {{ option.values.small }} (pequeno) / R$
+                {{ option.values.large }} (grande)
+              </span>
             </span>
             <span v-else> R$ {{ option.value }} (único) </span>
           </p>
+          <button
+            @click="
+              addToCart(
+                option.title,
+                option.values
+                  ? option.values.single
+                    ? option.values.single
+                    : option.values.small
+                  : option.value
+              )
+            "
+          >
+            Adicionar ao Carrinho
+          </button>
         </div>
       </div>
     </div>
@@ -86,6 +132,15 @@ onMounted(() => {
     <div v-else>
       <p>Indisponível no momento.</p>
     </div>
+
+    <h2>Carrinho</h2>
+    <ul>
+      <li v-for="item in cart" :key="item.title">
+        {{ item.title }} - R$ {{ item.value }}
+      </li>
+    </ul>
+
+    <button @click="clearCart">Limpar Carrinho</button>
   </div>
 </template>
 
@@ -102,7 +157,8 @@ onMounted(() => {
   padding: 20px;
 }
 
-h1 {
+h1,
+h2 {
   font-size: 36px;
   margin-bottom: 30px;
   text-align: center;
@@ -155,5 +211,19 @@ h1 {
   font-size: 16px;
   color: #333;
   margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #002d56;
 }
 </style>

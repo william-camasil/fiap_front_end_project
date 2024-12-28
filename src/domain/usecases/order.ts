@@ -6,5 +6,5 @@ export namespace Order {
 }
 
 export interface Order {
-  auth(params: Order.Params): Promise<Order.Model>;
+  order(params: Order.Params): Promise<Order.Model>;
 }

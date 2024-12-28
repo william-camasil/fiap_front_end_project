@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { PropType, ref, onMounted } from "vue";
-import { Categories, Payment } from "../../protocols";
+import {
+  Categories,
+  CategoriesModel,
+  Payment,
+  PaymentModel,
+} from "../../protocols";
 import { useRouter } from "vue-router";
 
 const { categories, payment } = defineProps({
@@ -10,13 +15,12 @@ const { categories, payment } = defineProps({
 
 const router = useRouter();
 
-const categoryData = ref<string | null>(null);
-const categoriesList = ref<any[]>([]); // TODO: adicionar o tipo correto
-const paymentList = ref<any[]>([]); // TODO: adicionar o tipo correto
+const categoriesList = ref<CategoriesModel[]>([]);
+const paymentList = ref<PaymentModel[]>([]);
 
 const handleShowCategories = async () => {
   try {
-    const response = await categories.getCategories();
+    const response = await categories!.getCategories();
     categoriesList.value = response;
   } catch (error) {
     console.error(error);
@@ -25,7 +29,7 @@ const handleShowCategories = async () => {
 
 const handleShowPayment = async () => {
   try {
-    const response = await payment.getPayment();
+    const response = await payment!.getPayment();
     paymentList.value = response;
   } catch (error) {
     console.error(error);
@@ -34,10 +38,18 @@ const handleShowPayment = async () => {
 
 const handleCategoryClick = async (link: string) => {
   try {
+    if (link === "combos") {
+      alert("Opção indisponível no momento");
+      return;
+    }
     router.push({ name: "MenuOptions", params: { link } });
   } catch (error) {
     console.error(error);
   }
+};
+
+const finalizeOrder = () => {
+  router.push({ name: "FinalizeOrder" });
 };
 
 onMounted(() => {
@@ -48,7 +60,7 @@ onMounted(() => {
 
 <template>
   <div class="home-container">
-    <h1>Categorias</h1>
+    <h1>Opções de pedidos disponíveis:</h1>
     <div class="categories-buttons">
       <button
         v-for="category in categoriesList"
@@ -60,21 +72,9 @@ onMounted(() => {
       </button>
     </div>
 
-    <h1>Formas de pagamento</h1>
-    <table class="payment-table">
-      <thead>
-        <tr>
-          <th>Opção</th>
-          <th>Forma de Pagamento</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="payment in paymentList" :key="payment.id">
-          <td>{{ payment.value }}</td>
-          <td>{{ payment.text }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <button @click="finalizeOrder" class="finalize-btn">
+      Finalizar Pedido
+    </button>
   </div>
 </template>
 
@@ -123,31 +123,22 @@ h1 {
   background-color: #002d56;
 }
 
-table {
-  width: 80%;
+.finalize-btn {
   margin-top: 30px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
-
-th {
-  background-color: #003366;
-  color: white;
+  padding: 12px 20px;
   font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 200px;
+  text-align: center;
 }
 
-td {
-  font-size: 16px;
-  color: #333;
-}
-
-table tbody tr:hover {
-  background-color: #f4f4f4;
+.finalize-btn:hover {
+  background-color: #218838;
 }
 </style>

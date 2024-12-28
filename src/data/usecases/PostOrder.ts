@@ -16,7 +16,7 @@ export class PostOrder implements Order {
     private readonly httpClient: HttpClient<Order.Params, Order.Model>
   ) {}
 
-  async auth(params: Order.Params): Promise<Order.Model> {
+  async order(params: Order.Params): Promise<Order.Model> {
     const httpResponse = await this.httpClient.request({
       url: `${this.url}`,
       method: "post",

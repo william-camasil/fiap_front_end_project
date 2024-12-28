@@ -18,8 +18,8 @@ const router = useRouter();
 
 const changeValue = (event: Event) => {
   const { name, value } = event.target as HTMLInputElement;
-  fieldErrror.value = validation.validate(name, value);
-  valid.value = Boolean(validation.validate(name, value));
+  fieldErrror.value = validation!.validate(name, value);
+  valid.value = Boolean(validation!.validate(name, value));
 };
 
 const login = async () => {
@@ -29,7 +29,7 @@ const login = async () => {
   };
 
   try {
-    const response = await authentication.auth(params);
+    const response = await authentication!.auth(params);
     currentAccount.set(response);
     router.push("/home");
   } catch (error) {
