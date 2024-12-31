@@ -72,6 +72,10 @@ const addToCart = (title: string, value: number) => {
   alert(`Item adicionado: ${item.title} - R$ ${item.value}`);
 };
 
+const goBack = () => {
+  router.back();
+};
+
 onMounted(() => {
   loadCart();
   const routeState = router.currentRoute.value.params;
@@ -141,6 +145,8 @@ onMounted(() => {
     </ul>
 
     <button @click="clearCart">Limpar Carrinho</button>
+
+    <button @click="goBack" class="back-btn">Voltar</button>
   </div>
 </template>
 
@@ -225,5 +231,24 @@ button {
 
 button:hover {
   background-color: #002d56;
+}
+
+.back-btn {
+  margin-top: 30px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 200px;
+  text-align: center;
+}
+
+.back-btn:hover {
+  background-color: #c82333;
 }
 </style>

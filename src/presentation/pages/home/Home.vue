@@ -52,6 +52,11 @@ const finalizeOrder = () => {
   router.push({ name: "FinalizeOrder" });
 };
 
+const handleLogout = () => {
+  localStorage.removeItem("authToken");
+  router.push({ name: "Login" });
+};
+
 onMounted(() => {
   handleShowCategories();
   handleShowPayment();
@@ -75,6 +80,8 @@ onMounted(() => {
     <button @click="finalizeOrder" class="finalize-btn">
       Finalizar Pedido
     </button>
+
+    <button @click="handleLogout" class="logout-btn">Deslogar</button>
   </div>
 </template>
 
@@ -140,5 +147,24 @@ h1 {
 
 .finalize-btn:hover {
   background-color: #218838;
+}
+
+.logout-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 200px;
+  text-align: center;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }
 </style>

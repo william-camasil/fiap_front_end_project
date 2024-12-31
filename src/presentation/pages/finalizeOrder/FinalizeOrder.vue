@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { PropType, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { Order, OrderModel } from "../../protocols";
 
 const { order } = defineProps({
@@ -10,6 +11,8 @@ const cart = ref<any[]>([]);
 const paymentOption = ref<string>("");
 const paymentOptions = ref<string[]>(["Cartão", "Dinheiro", "Pix"]);
 const orderDetails = ref<OrderModel>();
+
+const router = useRouter();
 
 const loadOrder = () => {
   const savedCart = localStorage.getItem("cart");
@@ -36,19 +39,23 @@ const finalizeOrder = async () => {
       paymentOption: paymentOption.value,
     };
 
-    const response = await order.order(orderData);
+    const response = await order?.order(orderData);
 
     orderDetails.value = response;
 
     localStorage.removeItem("cart");
     localStorage.removeItem("paymentOption");
-    cart.value = []; 
-    paymentOption.value = ""; 
+    cart.value = [];
+    paymentOption.value = "";
 
     alert("Pedido finalizado com sucesso!");
   } else {
     alert("Carrinho vazio ou opção de pagamento não selecionada.");
   }
+};
+
+const goBack = () => {
+  router.back();
 };
 
 onMounted(() => {
@@ -112,6 +119,8 @@ onMounted(() => {
         <p>Tipo de pagamento: {{ orderDetails.details.paymentOption }}</p>
       </ul>
     </div>
+
+    <button @click="goBack" class="back-btn">Voltar</button>
   </div>
 </template>
 
@@ -188,15 +197,22 @@ select {
   background-color: #218838;
 }
 
-pre {
-  background-color: #f1f1f1;
-  padding: 10px;
-  font-size: 14px;
-  color: #333;
-  border-radius: 5px;
-  margin-top: 20px;
-  max-width: 600px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+.back-btn {
+  margin-top: 30px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 200px;
+  text-align: center;
+}
+
+.back-btn:hover {
+  background-color: #c82333;
 }
 </style>
